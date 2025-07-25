@@ -169,40 +169,52 @@ Returns an array of product objects.
 
 ## 🧠 AI Usage Disclosure
 
-AI tools were used as a **productivity aid** throughout the project. Here’s how:
+In line with promoting smart development practices, **AI tools were used as a productivity aid** throughout this project. This section outlines the specific scenarios where AI contributed meaningfully without replacing the core development and decision-making process.
 
-### 🏗️ Initial Scaffolding
+### 🏗️ Initial Scaffolding and Boilerplate
 
-- AI generated initial boilerplate for:
-  - Express server (`server.js`)
-  - Mongoose connection
-  - Controllers and routes structure
+To accelerate setup, AI was used to generate:
+- The basic structure of the Express server (`server.js`)
+- A standard Mongoose connection pattern
+- Initial boilerplate for controllers and route files
 
-### 🔍 Debugging Assistance
+This provided a clean foundation for building out the rest of the application.
 
-- Used AI for:
-  - Interpreting error logs (e.g., JWT mismatch, Mongoose CastError)
-  - Identifying incorrect Postman HTTP methods
+### 🐞 Iterative Debugging and Problem-Solving
 
-### 🔧 Adapting to Test Scripts
+AI acted as a "pair programmer" during debugging by helping interpret error logs and propose fixes. Some key examples include:
 
-- AI helped align API response structure and routes to match external `test_api.py`, including:
-  - Removing `/api` prefix
-  - Renaming JWT response key to `access_token`
+- **"Invalid Token" Error**:  
+  When authenticated routes were failing, AI guided me to insert `console.log` statements inside both the token creation (`loginUser`) and verification (`authMiddleware`). This revealed that the payload used `id` while the middleware was checking for `userId`, leading to the bug fix.
 
-### 🚢 Dockerization
+- **Mongoose CastError**:  
+  When using an invalid product ID like `invalid12345`, the server responded with a generic `500` error. After sharing the stack trace, AI identified this as a Mongoose `CastError` and suggested checking ID validity using:  
+  ```js
+  mongoose.Types.ObjectId.isValid(id)
+  ```  
+  This led to improved and more user-friendly error handling.
 
-- AI explained and scaffolded:
-  - `Dockerfile`
-  - `docker-compose.yml`
-- Guided through line-by-line explanations
+### 🔄 Adapting to External Requirements
 
-### 📚 Swagger Documentation
+Upon introducing the `test_api.py` script, AI was prompted to compare the API responses against the test expectations. This "diff" exercise helped systematically identify all necessary changes:
+- Removed the `/api` prefix from routes
+- Renamed `token` to `access_token` in login/register responses
+- Aligned JSON response formats to match test script requirements
 
-- AI generated JSDoc comments for endpoints
-- Helped debug YAML syntax errors in Swagger UI
+### 🚢 Implementing Stretch Goals
 
-> 🧠 All **core logic and architecture** was built independently. AI served as a pair programmer and accelerator.
+- **Dockerization**:  
+  Being new to Docker, I used AI to explain foundational concepts. It then generated an initial `Dockerfile` and `docker-compose.yml`, with line-by-line explanations. This enabled successful containerization of the app and MongoDB service.
+
+- **Swagger Documentation**:  
+  AI generated the required JSDoc comments for Swagger. When faced with YAML syntax errors via `swagger-jsdoc`, I provided error logs and AI helped debug and fix formatting issues within the route files.
+
+---
+
+### 🧭 Final Note
+
+> While AI accelerated certain tasks, all core logic, architectural decisions, and development direction were led by my own understanding. AI served as a tool for **faster debugging, learning new technologies**, and **streamlining repetitive tasks** like documentation.
+
 
 ---
 
