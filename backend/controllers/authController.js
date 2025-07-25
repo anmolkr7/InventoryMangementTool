@@ -21,19 +21,15 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ error: 'Invalid username or password' });
     }
 
-    // --- DEBUGGING ---
-    console.log("--- Creating Token ---");
-    console.log("JWT Secret used for signing:", process.env.JWT_SECRET);
-    // --- END DEBUGGING ---
-
-    // Increased expiration to 24h to avoid timezone issues during testing
+    // console.log("Creating Token");
+    // console.log("JWT Secret used for signing:", process.env.JWT_SECRET);
     const authToken = jwt.sign(
         { userId: foundUser._id, username: foundUser.username },
         process.env.JWT_SECRET,
-        { expiresIn: '24h' } // Changed to 24 hours
+        { expiresIn: '24h' } 
     );
 
-    return res.status(200).json({ token: authToken });
+    return res.status(200).json({ access_token: authToken });
   } catch (error) {
     console.error('Login error:', error);
     return res.status(500).json({ error: 'Internal server error' });
@@ -43,23 +39,23 @@ export const loginUser = async (req, res) => {
 // POST /register - User registration
 export const registerUser = async (req, res) => {
   try {
-    const { email, username, password } = req.body;
+    const {username, password } = req.body;
 
-    if (!email || !username || !password) {
-      return res.status(400).json({ error: 'Email, username, and password are required' });
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password are required' });
     }
     
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    const existingUser = await User.findOne({ username });
     if (existingUser) {
-      return res.status(400).json({ error: 'Email or username already registered' });
+      return res.status(409).json({ error: 'Username already registered' });
     }
     
-    const newUser = new User({ email, username, password });
+     const newUser = new User({ username, password });
     await newUser.save();
 
     const authToken = newUser.generateJWT();
 
-    return res.status(201).json({ token: authToken });
+    return res.status(201).json({ access_token: authToken });
   } catch (error) {
     console.error('Registration error:', error);
     return res.status(500).json({ error: 'Registration failed' });
