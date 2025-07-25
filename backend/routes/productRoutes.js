@@ -4,8 +4,9 @@ import authMiddleware from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/', authMiddleware, addProduct);
-router.put('/:id/quantity', authMiddleware, updateProductQuantity);
-router.get('/', authMiddleware, getProducts);
+
+router.post('/products', authMiddleware, addProduct);
+router.put('/products/:id/quantity', authMiddleware, updateProductQuantity);
+router.get('/products', authMiddleware, getProducts);
 
 export default router;
