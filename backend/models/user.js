@@ -11,13 +11,7 @@ const userSchema = new mongoose.Schema({
     minLength: [6, 'Username must be at least 6 characters long'],
     maxLength: [20, 'Username must be at most 20 characters long'],
   },
-  email: {
-    type: String,
-    required: [true, 'Email is required'],
-    unique: true,
-    lowercase: true,
-    match: [/.+\@.+\..+/, 'Please provide a valid email address'],
-  },
+  
   password: {
     type: String,
     required: [true, 'Password is required'],
@@ -39,7 +33,7 @@ userSchema.methods.isValidPassword = async function(password) {
 
 userSchema.methods.generateJWT = function() {
   return jwt.sign(
-    { id: this._id, username: this.username, email: this.email },
+    { userId: this._id, username: this.username },
     process.env.JWT_SECRET,
     { expiresIn: '24h' }
   );
