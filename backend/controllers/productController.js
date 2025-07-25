@@ -35,7 +35,7 @@ export const addProduct = async (req, res) => {
     await newProduct.save();
 
     return res.status(201).json({
-      id: newProduct._id,
+      product_id: newProduct._id,
       message: 'Product created successfully',
     });
   } catch (error) {
@@ -72,13 +72,8 @@ export const updateProductQuantity = async (req, res) => {
       return res.status(404).json({ error: 'Product not found' });
     }
 
-    return res.status(200).json({
-      message: 'Quantity updated successfully',
-      product: {
-        id: updatedProduct._id,
-        name: updatedProduct.name,
-        quantity: updatedProduct.quantity,
-      },
+  return res.status(200).json({
+      quantity: updatedProduct.quantity,
     });
   } catch (error) {
     console.error('Update quantity error:', error);
@@ -86,35 +81,14 @@ export const updateProductQuantity = async (req, res) => {
   }
 };
 
-// GET /products - Get products with pagination
+// GET /products 
 export const getProducts = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-
-    // Validate pagination
-    if (page < 1 || limit < 1) {
-      return res.status(400).json({ error: 'Page and limit must be positive integers' });
-    }
-
-    const skip = (page - 1) * limit;
-    const totalProducts = await Product.countDocuments();
-    const products = await Product.find()
-      .skip(skip)
-      .limit(limit)
-      .select('name type sku image_url description quantity price');
-
-    return res.status(200).json({
-      products,
-      pagination: {
-        page,
-        limit,
-        total: totalProducts,
-        totalPages: Math.ceil(totalProducts / limit),
-      },
-    });
+    const products = await Product.find().select('name type sku image_url description quantity price');
+    
+    // Corrected: Return a raw array of products to match the script's expectation.
+    return res.status(200).json(products);
   } catch (error) {
-    console.error('Get products error:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
