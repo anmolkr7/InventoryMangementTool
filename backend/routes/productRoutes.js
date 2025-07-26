@@ -94,36 +94,64 @@ router.put('/products/:id/quantity', authMiddleware, updateProductQuantity);
  * @swagger
  * /products:
  *   get:
- *     summary: Get a list of all products
+ *     summary: Get a list of products
+ *     description: |
+ *       Retrieves a list of products.
+ *       - If `page` or `limit` query parameters are provided, it returns a paginated response.
+ *       - If no query parameters are provided, it returns a simple array of all products to maintain compatibility with the test script.
  *     tags: [Products]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: The page number to retrieve.
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: The number of items to retrieve per page.
  *     responses:
  *       200:
- *         description: A list of products
+ *         description: A successful response.
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   _id:
- *                     type: string
- *                   name:
- *                     type: string
- *                   type:
- *                     type: string
- *                   sku:
- *                     type: string
- *                   image_url:
- *                     type: string
- *                   description:
- *                     type: string
- *                   quantity:
- *                     type: integer
- *                   price:
- *                     type: number
+ *               oneOf:
+ *                 - type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                       name:
+ *                         type: string
+ *                       quantity:
+ *                         type: integer
+ *                 - type: object
+ *                   properties:
+ *                     products:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           _id:
+ *                             type: string
+ *                           name:
+ *                             type: string
+ *                           quantity:
+ *                             type: integer
+ *                     pagination:
+ *                       type: object
+ *                       properties:
+ *                         currentPage:
+ *                           type: integer
+ *                         totalPages:
+ *                           type: integer
+ *                         totalProducts:
+ *                           type: integer
  *       401:
  *         description: Unauthorized
  */
