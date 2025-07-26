@@ -55,7 +55,6 @@ export const updateProductQuantity = async (req, res) => {
       return res.status(404).json({ error: 'Product not found' }); 
     }
     
-    
     // Validate input
     if (quantity === undefined || !Number.isInteger(quantity) || quantity < 0) {
       return res.status(400).json({ error: 'Quantity must be a non-negative integer' });
@@ -84,11 +83,33 @@ export const updateProductQuantity = async (req, res) => {
 // GET /products 
 export const getProducts = async (req, res) => {
   try {
-    const products = await Product.find().select('name type sku image_url description quantity price');
-    
-    // Corrected: Return a raw array of products to match the script's expectation.
-    return res.status(200).json(products);
-  } catch (error) {
+    // Check if any pagination query parameters were provided
+    if (req.query.page || req.query.limit) {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const skip = (page - 1) * limit;
+      const totalProducts = await Product.countDocuments();
+      const products = await Product.find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+
+      return res.status(200).json({
+        products,
+        pagination: {
+          currentPage: page,
+          totalPages: Math.ceil(totalProducts / limit),
+          totalProducts,
+        },
+      });
+    } else {
+      // If no pagination params are found, return all products in a plain array.
+      const products = await Product.find();
+      return res.status(200).json(products);
+    }
+  } catch (error)
+  {
+    console.error('Get products error:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
