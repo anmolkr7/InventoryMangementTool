@@ -141,7 +141,7 @@
 			"response": []
 		},
 		{
-			"name": "getProducts",
+			"name": "getProductsPaginated",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -167,6 +167,45 @@
 						}
 					}
 				},
+				"url": {
+					"raw": "http://localhost:5000/products?page=1&limit=5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"products"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getProduct",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODgzYWU5NzBkMTkzZDZlOGNhMmUxZWIiLCJ1c2VybmFtZSI6InRlc3R1c2VyMTIzIiwiaWF0IjoxNzUzNDYwMzgzLCJleHAiOjE3NTM1NDY3ODN9.ekvdRzX5oOgg1A5bvzTv8KuCrpFAluTJGKiHYzKYgYw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
 				"url": {
 					"raw": "http://localhost:5000/products",
 					"protocol": "http",
