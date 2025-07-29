@@ -23,34 +23,32 @@ A small backend application built with Node.js, Express, and MongoDB to manage i
 The project follows a standard structure for Node.js applications, separating concerns into different directories.
 
 ```
-/inventory-backend
+/inventory  (Root Folder)
 |
-├── controllers/
-│   ├── authController.js
-│   └── productController.js
-|
-├── middleware/
-│   └── authMiddleware.js
-|
-├── models/
-│   ├── product.js
-│   └── user.js
-|
-├── routes/
-│   ├── authRoutes.js
-│   └── productRoutes.js
+├── backend/
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   └── productController.js
+│   ├── middleware/
+│   │   └── authMiddleware.js
+│   ├── models/
+│   │   ├── product.js
+│   │   └── user.js
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   └── productRoutes.js
+│   ├── app.js
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── server.js
+│   └── swaggerConfig.js
 |
 ├── .env                  # Local environment variables (ignored by Git)
 ├── .gitignore            # Specifies files to be ignored by Git
-├── app.js
-├── docker-compose.yml
-├── Dockerfile
-├── Inventory-API.postman_collection.json  # Postman collection for testing
-├── package.json
-├── package-lock.json
+├── docker-compose.yml    # Manages all services from the root
+├── Dockerfile            # Builds the backend application
+├── Inventory-API.postman_collection.json
 ├── README.md
-├── server.js
-├── swaggerConfig.js
 └── test_api.py
 ```
 
@@ -67,49 +65,75 @@ This is the simplest and recommended way to get the application running. It auto
 
 1. **Clone the Repository**
    ```bash
-   git clone <your-repository-url>
-   cd inventory-backend
+    git clone <your-repository-url>
+    cd inventory
    ```
 
-2. **Start the Application**
-   ```bash
-   docker-compose up
-   ```
-   This command will:
-   - Build the Node.js application image
-   - Pull the MongoDB image
-   - Start both containers
+2.  **Create Environment File**
 
-   Access the API at: `http://localhost:5000`  
-   Swagger Docs: `http://localhost:5000/api-docs`
+    In the root `inventory` folder, create a `.env` file and add the following variables:
 
-   > To stop the application: Press `Ctrl + C`
+    ```env
+    # Server Configuration
+    PORT=5000
+
+    # MongoDB Connection URI (for manual execution)
+    MONGODB_URI=mongodb://localhost:27017/inventory_app
+
+    # JWT Secret Key
+    JWT_SECRET=your_super_secret_jwt_key_12345
+    ```
+
+3.  **Start the Application**
+
+    From the **root `inventory` folder**, run the following command:
+
+    ```bash
+    docker-compose up --build
+    ```
+    This command will build the Node.js application image, pull the MongoDB image, and start both containers.
+
+    * **API Server**: `http://localhost:5000`
+    * **Swagger Docs**: `http://localhost:5000/api-docs`
+    To stop the application, press `Ctrl + C` in the terminal or run `docker-compose down`.
+
 
 ### 🧪 Running Manually (Without Docker)
-Ensure that Node.js and MongoDB are installed on your system.
+Ensure that **Node.js** and **MongoDB** are installed on your system.
 
-1. **Install Dependencies**
-   ```bash
-   npm install
-   ```
+1.  **Navigate to the Backend Directory**
+    From the root `inventory` folder, move into the `backend` directory:
 
-2. **Configure Environment Variables**
-   Create a `.env` file in the project root:
-   ```env
-   # Server Configuration
-   PORT=5000
+    ```bash
+    cd backend
+    ```
 
-   # MongoDB Connection URI
-   MONGODB_URI=mongodb://localhost:27017/inventory_app
+2.  **Install Dependencies**
+    Run the install command from inside the `backend` folder:
 
-   # JWT Secret Key
-   JWT_SECRET=your_super_secret_jwt_key_12345
-   ```
+    ```bash
+    npm install
+    ```
 
-3. **Start the Server**
-   ```bash
-   npm start
-   ```
+3.  **Configure Environment Variables**
+    Make sure you have a `.env` file in the **root `inventory` folder** (one level above `backend`). The `server.js` file is configured to find it there.
+    ```env
+    # Server Configuration
+    PORT=5000
+
+    # MongoDB Connection URI
+    MONGODB_URI=mongodb://localhost:27017/inventory_app
+
+    # JWT Secret Key
+    JWT_SECRET=your_super_secret_jwt_key_12345
+    ```
+
+4.  **Start the Server**
+    Run the start command from inside the `backend` folder:
+
+    ```bash
+    npm start
+    ```
 
 ## 📡 API Endpoints
 - **Base URL**: `http://localhost:5000`  
